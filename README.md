@@ -36,7 +36,7 @@ The repository is organized by year and day. Each day's folder contains the sour
 | 02 | [Gift Shop](https://adventofcode.com/2025/day/2) | ⭐ | ⭐ |
 | 03 | [Lobby](https://adventofcode.com/2025/day/3) | ⭐ | ⭐ |
 | 04 | [Printing Department](https://adventofcode.com/2025/day/4) | ⭐ | ⭐ |
-| 05 | [Day 5](https://adventofcode.com/2025/day/5) | 🕒 |
+| 05 | [Cafeteria](https://adventofcode.com/2025/day/5) | 👨‍💻 |
 | 06 | [Day 6](https://adventofcode.com/2025/day/6) | 🕒 |
 | 07 | [Day 7](https://adventofcode.com/2025/day/7) | 🕒 |
 | 08 | [Day 8](https://adventofcode.com/2025/day/8) | 🕒 |
