@@ -1,9 +1,9 @@
 /*********************************************************************************************************
 *
 *	Kristaq Vincani, 1/12/25
-*	File: day1/sol1.c
+*	File: day1/sol2.c
 *
-*	This program solves part #1 of https://adventofcode.com/2025/day/1
+*	This program solves part #2 of https://adventofcode.com/2025/day/1
 *
 *********************************************************************************************************/
 
@@ -11,7 +11,7 @@
 #include <stdlib.h> // FILE, fopen, fclose
 
 /* main solver function prototype */
-int rotate(char dir, int clicks, int pos);
+int rotate_and_count(char dir, int clicks, int* pos);
 
 /* program entry point */
 int main(int argc, char* argv[]) {
@@ -30,19 +30,17 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
-	int solution = 0; // total amount the needle landed on 0 after a rotation for each rotation in the input file
+	int solution = 0; // total amount the needle landed on 0 and passed through it after a rotation for each rotation in the input file
 
 	char dir; // 'L' for left and 'R' for right
 	int clicks; // amount of clicks performed in the given direction
 	int current_pos = 50; // we start at position 50, as specified in the problem
-
+	
 	/* read the input file until it ends */
 	while (fscanf(input_file, " %c%d", &dir, &clicks) != EOF) {
-		int new_pos = rotate(dir, clicks, current_pos); // get the new position after the rotation
-		if (new_pos == 0) solution++;
-		current_pos = new_pos;
+		solution += rotate_and_count(dir, clicks, &current_pos); // rotate and count for each rotation in the file
 	}
-
+	
 	printf("Solution: %d\n", solution);
 
 	fclose(input_file);
@@ -50,12 +48,19 @@ int main(int argc, char* argv[]) {
 }
 
 /*
-	When we perform a rotation we essentially add or subtract clicks
-	from the current position. Because tho the amount of clicks could
-	be very large, we make sure with the mod operator we stay inside
-	the range of the vault's numbers (0-99)
+	Our solution essentially performs each step manually and checks if it' zero
+	The wrap-around logic is the same as part 1
+	We use a pointer for pos to store it's position for the next rotation
 */
-int rotate(char dir, int clicks, int pos) {
-	if (dir == 'L') return (pos-clicks + 100) % 100; // the +100 is needed in case we go negative
-	else return (pos+clicks) % 100;
+int rotate_and_count(char dir, int clicks, int* pos) {
+	int zeroes = 0;
+	for (int i = 0; i < clicks; i++) {
+		if (dir == 'L') {
+			*pos = (*pos - 1 + 100) % 100;
+		}
+		else *pos = (*pos + 1) % 100;
+		
+		if (*pos == 0) zeroes++;
+	}
+	return zeroes;
 }
