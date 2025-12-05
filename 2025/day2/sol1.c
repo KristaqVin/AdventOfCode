@@ -1,11 +1,11 @@
-/*************************************************************************************************************
+/*********************************************************************************************************
 *
-*	Kristaq Vincani, 3/12/25
-*	File: sol1.c
+*	Kristaq Vincani, 1/12/25
+*	File: day2/sol1.c
 *
-*	This C program solves the Part 1 of the problem listed here: https://adventofcode.com/2025/day/2
+*	This program solves part #1 of https://adventofcode.com/2025/day/2
 *
-**************************************************************************************************************/
+*********************************************************************************************************/
 
 #include <stdio.h> // printf
 #include <stdlib.h> // getchar
@@ -14,16 +14,17 @@
 #define ull unsigned long long
 
 /* Function Prototypes */
-ull sum(ull lo, ull hi);
+ull sum(ull start, ull end);
 ull count(ull N);
 ull solve(ull L, ull R);
 
+/* program entry point */
 int main(void) {
 	
 	/* the total sum of all the invalid ids */
-	ull total = 0;
+	ull solution = 0;
 	
-	/* the program read the input file from standard input */
+	/* the program reads the input file from standard input */
 	int c;
 	while ((c = getchar()) != EOF) {
 		/* skip whitespaces */
@@ -35,7 +36,7 @@ int main(void) {
 		/* read L, the starting number of the range */
 		ull L = 0;
 		while (isdigit((unsigned char)c)) {
-			L = L * 10 + (ull)(c - '0');
+			L = L * 10 + (ull)(c - '0'); // converts a string to an int
 			c = getchar();
 		}
 		if (c != '-') break;
@@ -47,50 +48,61 @@ int main(void) {
 			R = R * 10 + (ull)(c - '0');
 			c = getchar();
 		}
-		total += solve(L, R);
+		solution += solve(L, R); // get the sum of the invalid ids for this range
 		if (c == EOF) break;
 	}
 	
-	printf("Solution: %llu\n", total);
+	printf("Solution: %llu\n", solution);
 	
 	return 0;
 }
 
-/* helper summation function */
-ull sum(ull lo, ull hi) {
-	ull cnt = hi - lo + 1;
-	return (lo + hi) * cnt / 2;
+/* 
+	helper summation function 
+	sums all integers between start and end (including those)
+*/
+ull sum(ull start, ull end) {
+	ull cnt = end - start + 1;
+	return (start + end) * cnt / 2;
 }
 
-/*	our core function: counts the numbers <= N that satisfy our property
-	an id is invalid when 1. its even and 2. its first half = its second half
- */
-ull count(ull N) {
+/*	
+	Our core function: returns the sum of all integers up to N that satisfy our property
+*/
+ull sum_invalid(ull N) {
 	ull res = 0;
-	ull pow10 = 1;
+	ull pow10 = 1; // the power that 10 is into (starting with 10^0)
 	
+	/*
+		when we concatenate a k digit number to number x, mathematically that is
+		new_x = x • 10^k + x = x • (10^k + 1)
+	*/
+
 	for (int k = 1; k <= 19; k++) {
 		pow10 *= 10;
-		ull factor = pow10 + 1;
-		ull lo = pow10 / 10;
+		ull factor = pow10 + 1; // this creates the multiplier (10^k + 1)
+		ull start = pow10 / 10; // the smallest k digit number
 		
-		if (lo > 0 && lo > N / factor) break;
+		if (start > 0 && start > N / factor) break;
 		
-		ull hi = N / factor;
-		ull max_x = pow10 - 1;
-		if (hi > max_x) hi = max_x;
+		ull end = N / factor; // the largest integet that when multiplied with factor is less or equal than N
+		ull max_x = pow10 - 1; // the largest k digit number
+		if (end > max_x) end = max_x;
 		
-		if (hi >= lo) {
-			res += factor * sum(lo, hi);
+		if (end >= start) {
+			res += factor * sum(start, end);
 		}
 	}
 	
 	return res;
 }
 
+/*
+	Calculates the sum of all invalid id for the given range
+*/
 ull solve(ull L, ull R) {
 	if (R < L) return 0;
-	ull a = count(R);
-	ull b = (L == 0) ? 0 : count(L-1);
+	ull a = sum_invalid(R);
+	ull b = (L == 0) ? 0 : sum_invalid(L-1);
 	return a-b;
 }
